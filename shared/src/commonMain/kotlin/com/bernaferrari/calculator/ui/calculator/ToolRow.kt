@@ -342,7 +342,8 @@ internal fun LayerSwitch(layer: FunctionLayer, onLayer: (FunctionLayer) -> Unit)
                 label = "123",
                 selected = !on,
                 color = if (!on) colors.onSurface else colors.onSurfaceVariant,
-                onClick = { onLayer(FunctionLayer.Off) },
+                // The selected digits segment also toggles into functions.
+                onClick = { onLayer(if (on) FunctionLayer.Off else FunctionLayer.Once) },
                 onLongClick = null,
             )
             Segment(
