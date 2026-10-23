@@ -114,6 +114,8 @@ fun ToolRow(
     resize: ResizeFeedback? = null,
     /** False when history already has a pane of its own, so the menu doesn't offer it. */
     showHistoryEntry: Boolean = true,
+    /** Labels already expose the flick functions directly on the digit keys. */
+    showLayerSwitch: Boolean = true,
 ) {
     val quiet = MaterialTheme.colorScheme.onSurfaceVariant
     val dragging = resize != null
@@ -139,7 +141,7 @@ fun ToolRow(
                     // The keys come back up from below: a chevron says so better than a dial pad.
                     Icon(Icons.Rounded.ExpandLess, contentDescription = stringResource(Res.string.show_keypad), tint = quiet)
                 }
-            } else {
+            } else if (showLayerSwitch) {
                 LayerSwitch(layer, onLayer)
             }
         }
@@ -340,7 +342,8 @@ internal fun LayerSwitch(layer: FunctionLayer, onLayer: (FunctionLayer) -> Unit)
                 label = "123",
                 selected = !on,
                 color = if (!on) colors.onSurface else colors.onSurfaceVariant,
-                onClick = { onLayer(FunctionLayer.Off) },
+                // The selected digits segment also toggles into functions.
+                onClick = { onLayer(if (on) FunctionLayer.Off else FunctionLayer.Once) },
                 onLongClick = null,
             )
             Segment(

@@ -137,7 +137,8 @@ fun CalculatorScreen(
     val copied = stringResource(Res.string.copied)
     val scope = rememberCoroutineScope()
 
-    var layer by rememberSaveable { mutableStateOf(FunctionLayer.Off) }
+    val showLayerSwitch = state.flickHints != FlickHints.LABELS
+    var layer by rememberSaveable(showLayerSwitch) { mutableStateOf(FunctionLayer.Off) }
     var historyOpen by rememberSaveable { mutableStateOf(false) }
     // Back closes history mode before leaving the app.
     @OptIn(ExperimentalComposeUiApi::class)
@@ -251,6 +252,7 @@ fun CalculatorScreen(
             ToolRow(
                 historyOpen = historyOpen,
                 layer = layer,
+                showLayerSwitch = showLayerSwitch,
                 onToggleHistory = { haptics.tap(); historyOpen = !historyOpen },
                 // Beside a history pane there's no history to open.
                 showHistoryEntry = !split,
@@ -279,7 +281,7 @@ fun CalculatorScreen(
             MainKeypad(
                 decimal = formatter.decimal,
                 haptics = haptics,
-                functionLayer = layer != FunctionLayer.Off,
+                functionLayer = showLayerSwitch && layer != FunctionLayer.Off,
                 onKey = viewModel::onKey,
                 onFunctionKey = { key ->
                     viewModel.onSwipeKey(key)
